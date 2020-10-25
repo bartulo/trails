@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL Particle System</title>
+    <script src = "js/transformation.js" type = "text/javascript"></script>
+    <script src = "js/camera.js" type = "text/javascript"></script>
+    <script src = "main.js" type = "text/javascript"></script>
+    <script type = "text/x-vertex-shader" id = "particle-update-vert">
+      #version 300 es
+      precision mediump float;
+
+      uniform float u_TimeDelta;
+      uniform sampler2D u_Vel;
+      uniform sampler2D u_Ang;
+      uniform sampler2D u_Noise;
+
+      in vec2 i_Position;
+      in vec2 i_Start;
+      in vec2 i_Orig;
+      in float i_CoefA;
+      in float i_CoefB;
+      in float i_CoefC;
+      in float i_CoefD;
+      in float i_CoefE;
+      in float i_Life;
+      in float i_Age;
+
+      out vec2 v_Position;
+      out vec2 v_Start;
+      out vec2 v_Orig;
+      out float v_CoefA;
+      out float v_CoefB;
+      out float v_CoefC;
+      out float v_CoefD;
+      out float v_CoefE;
+      out float v_Life;
+      out float v_Age;
+
+      void main() {
+
+        // Cálculo del ángulo y velocidad
+        if ( i_Age >= i_Life ) {
+
+          vec2 new_Orig = i_Start;
+          v_Age = 0.;
+
+          vec2 text_coord = ( new_Orig + 1. ) / 2.;
+          float ang = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+          float ang2 = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2.);
+          float vel = texture( u_Vel, vec2(text_coord.x, -1. * (text_coord.y -1.))).r;
+          
+          // Cálculo de los términos de la ecuación
+
+          vec2 termA = vec2( vel * cos( ang ), vel * sin( ang ) ) * 0.03;
+          vec2 termB = normalize(vec2(  cos( ang2),  sin( ang2 ) )) * 0.01;
+
+          v_Orig = new_Orig - termA;
+
+          // Cálculo del ángulo y velocidad de una posición más avanzada.
+
+          vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
+          float ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+          float ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
+          float vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
+
+          vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
+          vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
+
+          //Cálculo de la ecuación
+
+          v_Start = i_Start;
+
+          v_Position = v_Orig - termA * i_CoefA - termB * i_CoefB - termB * i_CoefC - termD * i_CoefD - termE * i_CoefE;
+
+          v_CoefA = i_CoefA;
+          v_CoefB = i_CoefB;
+          v_CoefC = i_CoefC;
+          v_CoefD = i_CoefD;
+          v_CoefE = i_CoefE;
+          v_Life = i_Life;
+
+       } else {
+
+          vec2 new_Orig = i_Orig;
+          v_Age = i_Age + u_TimeDelta;
+
+          vec2 text_coord = ( new_Orig + 1. ) / 2.;
+          float ang = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+          float ang2 = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2.);
+          float vel = texture( u_Vel, vec2(text_coord.x, -1. * (text_coord.y -1.))).r;
+          
+          // Cálculo de los términos de la ecuación
+
+          vec2 termA = vec2( vel * cos( ang ), vel * sin( ang ) ) * 0.03;
+          vec2 termB = normalize(vec2(  cos( ang2),  sin( ang2 ) )) * 0.01;
+
+          v_Orig = new_Orig - termA;
+
+          // Cálculo del ángulo y velocidad de una posición más avanzada.
+
+          vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
+          float ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+          float ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
+          float vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
+
+          vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
+          vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
+
+          //Cálculo de la ecuación
+
+          v_Start = i_Start;
+
+          v_Position = v_Orig - termA * i_CoefA - termB * i_CoefB - termB * i_CoefC - termD * i_CoefD - termE * i_CoefE;
+
+          v_CoefA = i_CoefA;
+          v_CoefB = i_CoefB;
+          v_CoefC = i_CoefC;
+          v_CoefD = i_CoefD;
+          v_CoefE = i_CoefE;
+          v_Life = i_Life;
+
+        }
+      }
+
+
+    </script>
+    <script type = "text/x-fragment-shader" id = "passthru-frag-shader">
+      #version 300 es
+      precision mediump float;
+      in float v_Age;
+      void main() { discard; }
+    </script>
+    <script type = "text/x-vertex-shader" id = "particle-render-vert">
+      #version 300 es
+      precision mediump float;
+
+      uniform mat4 view;
+      uniform mat4 projection;
+      uniform sampler2D u_Mdt;
+
+      in vec2 i_Position;
+
+      out vec2 v_Position;
+
+      void main() {
+        v_Position = i_Position;
+        vec2 text_coord = (i_Position + 1.0)/2.0;
+        float alt = texture(u_Mdt, vec2(text_coord.x, -1. * (text_coord.y - 1.))).r;
+        gl_Position = projection * view * vec4(i_Position, (alt / 3.) + 0.01, 1.0);
+      }
+    </script>
+    <script type = "text/x-fragment-shader" id = "particle-render-frag">
+      #version 300 es
+      precision mediump float;
+
+      uniform sampler2D u_Vel;
+      uniform sampler2D u_Grad;
+
+      in vec2 v_Position;
+
+      out vec4 o_FragColor;
+
+      void main() {
+        vec2 text_coord = ( v_Position + 1. ) / 2.;
+        float color = texture( u_Vel, vec2( text_coord.x, -1. * (text_coord.y - 1. ) ) ).r;
+        o_FragColor = vec4(color * 2., 0., 0., 1.0);
+      }
+    </script>
+    <script type = "text/x-vertex-shader" id = "cube-render-vert">
+      #version 300 es
+      precision mediump float;
+
+      uniform mat4 view;
+      uniform mat4 projection;
+
+      in vec3 nm_Position;
+
+      void main() {
+        gl_Position = projection * view * vec4(nm_Position, 1.0);
+      }
+    </script>
+    <script type = "text/x-fragment-shader" id = "cube-render-frag">
+      #version 300 es
+      precision mediump float;
+
+      out vec4 o_FragColor;
+
+      void main() {
+        o_FragColor = vec4(1.,1.,1., 1.0);
+      }
+    </script>
+  </head>
+  <body style = "text-align:center">
+  <script>
+    var vel = loadMdt('vel.bin').then(function(v){velArray = v});
+    var ang = loadMdt('ang.bin').then(function(v){angArray = v});
+    Promise.all([vel, ang]).then(function() { main() });
+  </script>
+  </body>
+
+</html>
