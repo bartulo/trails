@@ -126,7 +126,7 @@ function initialParticleData() {
     var age = Math.random() * 1.5;
 
     var orig = [Math.random() * 2 - 1, Math.random() * 2 - 1];
-    var Pto1 = [0,0, age, 0]; //Los cinco primeros números son los coeficientes y los dos últimos life y age
+    var Pto1 = [0,0, age, 0]; //Los dos primeros números son los coeficientes y los dos últimos life y age
     var Pto2 = [0,1, age, 0];
     var Pto3 = [1,0, age, 0];
     var Pto4 = [1,1, age, 0];

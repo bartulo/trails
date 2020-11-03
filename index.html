@@ -32,100 +32,57 @@
 
       void main() {
 
+        // Forma de eliminar el if
+
+        float eval1 = step(i_Age, i_Life);
+        float eval2 = step(i_Life, i_Age);
+
+        vec2 new_Orig = i_Start * eval2 + i_Orig * eval1;
+        v_Age = (i_Age + u_TimeDelta) * eval1;
+
         // Cálculo del ángulo y velocidad
-        if ( i_Age >= i_Life ) {
 
-          vec2 new_Orig = i_Start;
-          v_Age = 0.;
+        vec2 text_coord = ( new_Orig + 1. ) / 2.;
+        float ang = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+        float ang2 = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2.);
+        float vel = texture( u_Vel, vec2(text_coord.x, -1. * (text_coord.y -1.))).r;
+        
+        // Cálculo de los términos de la ecuación
 
-          vec2 text_coord = ( new_Orig + 1. ) / 2.;
-          float ang = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
-          float ang2 = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2.);
-          float vel = texture( u_Vel, vec2(text_coord.x, -1. * (text_coord.y -1.))).r;
-          
-          // Cálculo de los términos de la ecuación
+        vec2 termA = vec2( vel * cos( ang ), vel * sin( ang ) ) * 0.03;
+        vec2 termB = normalize(vec2(  cos( ang2),  sin( ang2 ) )) * 0.01;
 
-          vec2 termA = vec2( vel * cos( ang ), vel * sin( ang ) ) * 0.03;
-          vec2 termB = normalize(vec2(  cos( ang2),  sin( ang2 ) )) * 0.01;
+        v_Orig = new_Orig - termA;
 
-          v_Orig = new_Orig - termA;
+        // Cálculo del ángulo y velocidad de una posición más avanzada.
 
-          // Cálculo del ángulo y velocidad de una posición más avanzada.
+        vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
+        float ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+        float ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
+        float vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
 
-          vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
-          float ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
-          float ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
-          float vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
+        vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
+        vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
 
-          vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
-          vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
+        //Cálculo de la ecuación
 
-          //Cálculo de la ecuación
+        v_Start = i_Start;
 
-          v_Start = i_Start;
+        // Cálculo de los coeficientes
 
-          // Cálculo de los coeficientes
+        float CoefA = step(1.0, i_Order);
+        float CoefD = step(2.0, i_Order);
 
-          float CoefA = step(1.0, i_Order);
-          float CoefD = step(2.0, i_Order);
+        float CoefB = step(i_Order, 0.5) * i_Offset;
+        float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
+        float CoefE = step(2.0, i_Order) * i_Offset;
 
-          float CoefB = step(i_Order, 0.5) * i_Offset;
-          float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
-          float CoefE = step(2.0, i_Order) * i_Offset;
+        v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
 
-          v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
+        v_Order = i_Order;
+        v_Offset = i_Offset;
+        v_Life = i_Life;
 
-          v_Order = i_Order;
-          v_Offset = i_Offset;
-          v_Life = i_Life;
-
-       } else {
-
-          vec2 new_Orig = i_Orig;
-          v_Age = i_Age + u_TimeDelta;
-
-          vec2 text_coord = ( new_Orig + 1. ) / 2.;
-          float ang = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
-          float ang2 = -1. * (texture( u_Ang, vec2(text_coord.x, -1. * (text_coord.y -1.))).r * 3.1415 * 2.);
-          float vel = texture( u_Vel, vec2(text_coord.x, -1. * (text_coord.y -1.))).r;
-          
-          // Cálculo de los términos de la ecuación
-
-          vec2 termA = vec2( vel * cos( ang ), vel * sin( ang ) ) * 0.03;
-          vec2 termB = normalize(vec2(  cos( ang2),  sin( ang2 ) )) * 0.01;
-
-          v_Orig = new_Orig - termA;
-
-          // Cálculo del ángulo y velocidad de una posición más avanzada.
-
-          vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
-          float ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
-          float ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
-          float vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
-
-          vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
-          vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
-
-          //Cálculo de la ecuación
-
-          v_Start = i_Start;
-
-          // Cálculo de los coeficientes
-
-          float CoefA = step(1.0, i_Order);
-          float CoefD = step(2.0, i_Order);
-
-          float CoefB = step(i_Order, 0.5) * i_Offset;
-          float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
-          float CoefE = step(2.0, i_Order) * i_Offset;
-
-          v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
-
-          v_Order = i_Order;
-          v_Offset = i_Offset;
-          v_Life = i_Life;
-
-        }
       }
 
 
