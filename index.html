@@ -17,22 +17,16 @@
       in vec2 i_Position;
       in vec2 i_Start;
       in vec2 i_Orig;
-      in float i_CoefA;
-      in float i_CoefB;
-      in float i_CoefC;
-      in float i_CoefD;
-      in float i_CoefE;
+      in float i_Order;
+      in float i_Offset;
       in float i_Life;
       in float i_Age;
 
       out vec2 v_Position;
       out vec2 v_Start;
       out vec2 v_Orig;
-      out float v_CoefA;
-      out float v_CoefB;
-      out float v_CoefC;
-      out float v_CoefD;
-      out float v_CoefE;
+      out float v_Order;
+      out float v_Offset;
       out float v_Life;
       out float v_Age;
 
@@ -70,13 +64,19 @@
 
           v_Start = i_Start;
 
-          v_Position = v_Orig - termA * i_CoefA - termB * i_CoefB - termB * i_CoefC - termD * i_CoefD - termE * i_CoefE;
+          // Cálculo de los coeficientes
 
-          v_CoefA = i_CoefA;
-          v_CoefB = i_CoefB;
-          v_CoefC = i_CoefC;
-          v_CoefD = i_CoefD;
-          v_CoefE = i_CoefE;
+          float CoefA = step(1.0, i_Order);
+          float CoefD = step(2.0, i_Order);
+
+          float CoefB = step(i_Order, 0.5) * i_Offset;
+          float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
+          float CoefE = step(2.0, i_Order) * i_Offset;
+
+          v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
+
+          v_Order = i_Order;
+          v_Offset = i_Offset;
           v_Life = i_Life;
 
        } else {
@@ -110,13 +110,19 @@
 
           v_Start = i_Start;
 
-          v_Position = v_Orig - termA * i_CoefA - termB * i_CoefB - termB * i_CoefC - termD * i_CoefD - termE * i_CoefE;
+          // Cálculo de los coeficientes
 
-          v_CoefA = i_CoefA;
-          v_CoefB = i_CoefB;
-          v_CoefC = i_CoefC;
-          v_CoefD = i_CoefD;
-          v_CoefE = i_CoefE;
+          float CoefA = step(1.0, i_Order);
+          float CoefD = step(2.0, i_Order);
+
+          float CoefB = step(i_Order, 0.5) * i_Offset;
+          float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
+          float CoefE = step(2.0, i_Order) * i_Offset;
+
+          v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
+
+          v_Order = i_Order;
+          v_Offset = i_Offset;
           v_Life = i_Life;
 
         }

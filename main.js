@@ -126,12 +126,12 @@ function initialParticleData() {
     var age = Math.random() * 1.5;
 
     var orig = [Math.random() * 2 - 1, Math.random() * 2 - 1];
-    var Pto1 = [0,0,0,0,0, age, 0]; //Los cinco primeros números son los coeficientes y los dos últimos life y age
-    var Pto2 = [0,1,0,0,0, age, 0];
-    var Pto3 = [1,0,0,0,0, age, 0];
-    var Pto4 = [1,0,1,0,0, age, 0];
-    var Pto5 = [1,0,0,1,0, age, 0];
-    var Pto6 = [1,0,0,1,1, age, 0];
+    var Pto1 = [0,0, age, 0]; //Los cinco primeros números son los coeficientes y los dos últimos life y age
+    var Pto2 = [0,1, age, 0];
+    var Pto3 = [1,0, age, 0];
+    var Pto4 = [1,1, age, 0];
+    var Pto5 = [2,0, age, 0];
+    var Pto6 = [2,1, age, 0];
 
     data.push(orig, orig, orig, Pto3, orig, orig, orig, Pto1, orig, orig, orig, Pto2, orig, orig, orig, Pto3, orig, orig, orig, Pto2, orig, orig, orig, Pto4, orig, orig, orig, Pto5, orig, orig, orig, Pto3, orig, orig, orig, Pto4, orig, orig, orig, Pto5, orig, orig, orig, Pto4, orig, orig, orig, Pto6); 
     data = data.flat();
@@ -190,11 +190,8 @@ function init(
       "v_Position",
       "v_Start",
       "v_Orig",
-      "v_CoefA",
-      "v_CoefB",
-      "v_CoefC",
-      "v_CoefD",
-      "v_CoefE",
+      "v_Order",
+      "v_Offset",
       "v_Life",
       "v_Age",
     ]);
@@ -228,28 +225,13 @@ function init(
       num_components: 2,
       type: gl.FLOAT
     },
-    i_CoefA: {
-      location: gl.getAttribLocation(update_program, "i_CoefA"),
+    i_Order: {
+      location: gl.getAttribLocation(update_program, "i_Order"),
       num_components: 1,
       type: gl.FLOAT
     },
-    i_CoefB: {
-      location: gl.getAttribLocation(update_program, "i_CoefB"),
-      num_components: 1,
-      type: gl.FLOAT
-    },
-    i_CoefC: {
-      location: gl.getAttribLocation(update_program, "i_CoefC"),
-      num_components: 1,
-      type: gl.FLOAT
-    },
-    i_CoefD: {
-      location: gl.getAttribLocation(update_program, "i_CoefD"),
-      num_components: 1,
-      type: gl.FLOAT
-    },
-    i_CoefE: {
-      location: gl.getAttribLocation(update_program, "i_CoefE"),
+    i_Offset: {
+      location: gl.getAttribLocation(update_program, "i_Offset"),
       num_components: 1,
       type: gl.FLOAT
     },
@@ -286,7 +268,7 @@ function init(
       vao: vaos[0],
       buffers: [{
         buffer_object: buffers[0],
-        stride: 4 * 13,
+        stride: 4 * 10,
         attribs: update_attrib_locations
       }]
     },
@@ -294,7 +276,7 @@ function init(
       vao: vaos[1],
       buffers: [{
         buffer_object: buffers[1],
-        stride: 4 * 13,
+        stride: 4 * 10,
         attribs: update_attrib_locations
       }]
     },
@@ -302,7 +284,7 @@ function init(
       vao: vaos[2],
       buffers: [{
         buffer_object: buffers[0],
-        stride: 4 * 13,
+        stride: 4 * 10,
         attribs: render_attrib_locations
       }],
     },
@@ -310,7 +292,7 @@ function init(
       vao: vaos[3],
       buffers: [{
         buffer_object: buffers[1],
-        stride: 4 * 13,
+        stride: 4 * 10,
         attribs: render_attrib_locations
       }],
     },
@@ -443,7 +425,7 @@ function render(gl, state, timestamp_millis) {
   gl.bindBuffer(gl.ARRAY_BUFFER, state.particle_sys_buffers[state.write]);
   gl.enableVertexAttribArray(0);
   gl.vertexAttribPointer(
-    0, 2, gl.FLOAT, false, 4 * 13, 0);
+    0, 2, gl.FLOAT, false, 4 * 10, 0);
   gl.uniformMatrix4fv(
     gl.getUniformLocation(state.particle_render_program, "view"),
     false,
