@@ -123,17 +123,17 @@ function initialParticleData() {
   var data = [];
   for (var i = 0; i < 3000; i++) {
 
-    var age = Math.random() * 1.5;
+    var age = Math.random() + 0.5;
 
     var orig = [Math.random() * 2 - 1, Math.random() * 2 - 1];
-    var Pto1 = [0,0, age, 0]; //Los dos primeros números son los coeficientes y los dos últimos life y age
-    var Pto2 = [0,1, age, 0];
-    var Pto3 = [1,0, age, 0];
-    var Pto4 = [1,1, age, 0];
-    var Pto5 = [2,0, age, 0];
-    var Pto6 = [2,1, age, 0];
+    var Pto1 = [orig, orig, orig, 0, 0, age, 0].flat(); //Los dos primeros números son los coeficientes y los dos últimos life y age
+    var Pto2 = [orig, orig, orig, 0, 1, age, 0].flat();
+    var Pto3 = [orig, orig, orig, 1, 0, age, 0].flat();
+    var Pto4 = [orig, orig, orig, 1, 1, age, 0].flat();
+    var Pto5 = [orig, orig, orig, 2, 0, age, 0].flat();
+    var Pto6 = [orig, orig, orig, 2, 1, age, 0].flat();
 
-    data.push(orig, orig, orig, Pto3, orig, orig, orig, Pto1, orig, orig, orig, Pto2, orig, orig, orig, Pto3, orig, orig, orig, Pto2, orig, orig, orig, Pto4, orig, orig, orig, Pto5, orig, orig, orig, Pto3, orig, orig, orig, Pto4, orig, orig, orig, Pto5, orig, orig, orig, Pto4, orig, orig, orig, Pto6); 
+    data.push(Pto3, Pto1, Pto2, Pto3, Pto2, Pto4, Pto5, Pto3, Pto4, Pto5, Pto4, Pto6); 
     data = data.flat();
   }
 
