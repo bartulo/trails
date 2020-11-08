@@ -132,8 +132,12 @@ function initialParticleData() {
     var Pto4 = [orig, orig, orig, 1, 1, age, 0].flat();
     var Pto5 = [orig, orig, orig, 2, 0, age, 0].flat();
     var Pto6 = [orig, orig, orig, 2, 1, age, 0].flat();
+    var Pto7 = [orig, orig, orig, 3, 0, age, 0].flat();
+    var Pto8 = [orig, orig, orig, 3, 1, age, 0].flat();
+    var Pto9 = [orig, orig, orig, 4, 0, age, 0].flat();
+    var Pto10 = [orig, orig, orig, 4, 1, age, 0].flat();
 
-    data.push(Pto3, Pto1, Pto2, Pto3, Pto2, Pto4, Pto5, Pto3, Pto4, Pto5, Pto4, Pto6); 
+    data.push(Pto3, Pto1, Pto2, Pto3, Pto2, Pto4, Pto5, Pto3, Pto4, Pto5, Pto4, Pto6, Pto7, Pto5, Pto6, Pto7, Pto6, Pto8, Pto9, Pto7, Pto8, Pto9, Pto8, Pto10); 
     data = data.flat();
   }
 

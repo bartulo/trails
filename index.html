@@ -32,7 +32,7 @@
 
       void main() {
 
-        // Forma de eliminar el if
+        // Forma de eliminar el if equivale a if i_Age > i_Life ...... else .....
 
         float eval1 = step(i_Age, i_Life);
         float eval2 = step(i_Life, i_Age);
@@ -54,6 +54,8 @@
 
         v_Orig = new_Orig - termA;
 
+        //TODO Convertir esto en un for loop.
+
         // Cálculo del ángulo y velocidad de una posición más avanzada.
 
         vec2 text_coord_new = ( v_Orig + 1. ) / 2.;
@@ -64,6 +66,30 @@
         vec2 termD = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
         vec2 termE = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
 
+        // Cálculo del ángulo y velocidad de una posición más avanzada (again).
+
+        vec2 current_Origin = v_Orig - termD; 
+        text_coord_new = ( current_Origin + 1. ) / 2.;
+        ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+        ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
+        vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
+
+        vec2 termF = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
+        vec2 termG = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
+
+        // Cálculo del ángulo y velocidad de una posición más avanzada (again again).
+
+        current_Origin = current_Origin - termF;
+        text_coord_new = ( current_Origin + 1. ) / 2.;
+        ang_new = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 * 2. - (3.1415 / 2.));
+        ang_new2 = -1. * (texture( u_Ang, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r * 3.1415 );
+        vel_new = texture( u_Vel, vec2(text_coord_new.x, -1. * (text_coord_new.y -1.))).r;
+
+        vec2 termH = vec2( vel_new * cos( ang_new ), vel_new * sin( ang_new ) ) * 0.03 ; 
+        vec2 termI = normalize(vec2( vel_new * cos( ang_new2 ), vel_new * sin( ang_new2 ) )) * 0.01;
+
+        //fin del TODo. 
+
         //Cálculo de la ecuación
 
         v_Start = i_Start;
@@ -72,12 +98,16 @@
 
         float CoefA = step(1.0, i_Order);
         float CoefD = step(2.0, i_Order);
+        float CoefF = step(3.0, i_Order);
+        float CoefH = step(4.0, i_Order);
 
         float CoefB = step(i_Order, 0.5) * i_Offset;
         float CoefC = step(1.0, i_Order) * step(i_Order, 1.5) * i_Offset;
-        float CoefE = step(2.0, i_Order) * i_Offset;
+        float CoefE = step(2.0, i_Order) * step(i_Order, 2.5) * i_Offset;
+        float CoefG = step(3.0, i_Order) * step(i_Order, 3.5) * i_Offset;
+        float CoefI = step(4.0, i_Order) * i_Offset;
 
-        v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE;
+        v_Position = v_Orig - termA * CoefA - termB * CoefB - termB * CoefC - termD * CoefD - termE * CoefE - termF * CoefF - termG * CoefG - termH * CoefH - termI * CoefI;
 
         v_Order = i_Order;
         v_Offset = i_Offset;
