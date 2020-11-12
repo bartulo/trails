@@ -121,8 +121,9 @@ function randomRGData(size_x, size_y) {
 
 function initialParticleData() {
   var data = [];
-  for (var i = 0; i < 3000; i++) {
+  for (var i = 0; i < 9000; i++) {
 
+    var tmp = [];
     var age = Math.random() + 0.5;
 
     var orig = [Math.random() * 2 - 1, Math.random() * 2 - 1];
@@ -137,8 +138,12 @@ function initialParticleData() {
     var Pto9 = [orig, orig, orig, 4, 0, age, 0].flat();
     var Pto10 = [orig, orig, orig, 4, 1, age, 0].flat();
 
-    data.push(Pto3, Pto1, Pto2, Pto3, Pto2, Pto4, Pto5, Pto3, Pto4, Pto5, Pto4, Pto6, Pto7, Pto5, Pto6, Pto7, Pto6, Pto8, Pto9, Pto7, Pto8, Pto9, Pto8, Pto10); 
-    data = data.flat();
+    tmp.push(Pto3, Pto1, Pto2, Pto3, Pto2, Pto4, Pto5, Pto3, Pto4, Pto5, Pto4, Pto6, Pto7, Pto5, Pto6, Pto7, Pto6, Pto8, Pto9, Pto7, Pto8, Pto9, Pto8, Pto10); 
+    tmp = tmp.flat();
+
+    tmp.forEach( function(e) {
+      data.push(e);
+    });
   }
 
   return data;
@@ -419,7 +424,7 @@ function render(gl, state, timestamp_millis) {
     gl.TRANSFORM_FEEDBACK_BUFFER, 0, state.particle_sys_buffers[state.write]);
   gl.enable(gl.RASTERIZER_DISCARD);
   gl.beginTransformFeedback(gl.POINTS);
-  gl.drawArrays(gl.POINTS, 0, 12 * 3000);
+  gl.drawArrays(gl.POINTS, 0, 24 * 9000);
   gl.endTransformFeedback();
   gl.disable(gl.RASTERIZER_DISCARD);
   gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
@@ -458,7 +463,7 @@ function render(gl, state, timestamp_millis) {
   gl.uniform1i(
     gl.getUniformLocation(state.particle_render_program, "u_Noise"),
     3);
-  gl.drawArrays(gl.TRIANGLES, 0, 12 * 3000);
+  gl.drawArrays(gl.TRIANGLES, 0, 24 * 9000);
   var tmp = state.read;
   state.read = state.write;
   state.write = tmp;
